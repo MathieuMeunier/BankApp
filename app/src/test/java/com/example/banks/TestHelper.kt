@@ -8,9 +8,9 @@ import com.example.banks.network.model.OperationResponse
 import com.example.banks.ui.model.AccountUI
 import com.example.banks.ui.model.BankUI
 import com.example.banks.ui.model.OperationUI
-import com.example.banks.utils.DataState
-import com.example.banks.utils.NetworkResult
-import com.example.banks.utils.convertToDataState
+import com.example.banks.network.DataResult
+import com.example.banks.network.NetworkResult
+import com.example.banks.network.convertToDataState
 import java.io.File
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -240,8 +240,8 @@ class TestHelper {
             val bankNetworkResult = NetworkResult.Success(200, bankUIS)
             val bankAccount = NetworkResult.Success(200, account1)
 
-            val dataAccountStateResult: DataState<AccountUI> = bankAccount.convertToDataState()
-            val dataBankAccountsStateResultUI: DataState<List<BankUI>> = bankNetworkResult.convertToDataState()
+            val dataAccountStateResult: DataResult<AccountUI> = bankAccount.convertToDataState()
+            val dataBankAccountsStateResultUI: DataResult<List<BankUI>> = bankNetworkResult.convertToDataState()
         }
     }
 

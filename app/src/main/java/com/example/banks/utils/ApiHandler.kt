@@ -1,5 +1,6 @@
 package com.example.banks.utils
 
+import com.example.banks.network.NetworkResult
 import retrofit2.HttpException
 import retrofit2.Response
 

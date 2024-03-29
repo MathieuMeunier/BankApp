@@ -3,7 +3,7 @@ package com.example.banks.network.apis
 import com.example.banks.utils.ApiHandler
 import com.example.banks.network.mappers.BankMapper
 import com.example.banks.repository.model.Bank
-import com.example.banks.utils.NetworkResult
+import com.example.banks.network.NetworkResult
 import javax.inject.Inject
 
 class BankAccountServices @Inject constructor(

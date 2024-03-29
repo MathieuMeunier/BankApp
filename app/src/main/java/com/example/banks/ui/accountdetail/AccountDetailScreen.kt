@@ -29,7 +29,8 @@ import com.example.banks.ui.component.NavigationTopBar
 import com.example.banks.ui.model.AccountUI
 import com.example.banks.ui.model.OperationUI
 import com.example.banks.utils.Data
-import com.example.banks.utils.DataState
+import com.example.banks.network.DataResult
+import com.example.banks.ui.component.CircularIndicator
 import com.example.banks.utils.ListDivider
 import com.example.banks.utils.UiUtils
 
@@ -49,15 +50,15 @@ fun AccountDetailScreen(
     }
 
     when (val state = accountState.value) {
-        is DataState.Failure -> {
+        is DataResult.Error -> {
             // Show Error
             Log.e("AccountDetailScreen", state.errorMessage.toString())
         }
-        DataState.Loading -> {
+        DataResult.Loading -> {
             // Show Loading
-            Log.v("AccountDetailScreen", "Loading")
+            CircularIndicator()
         }
-        is DataState.Success -> {
+        is DataResult.Success -> {
             TopBarAccountDetail(
                 navHostController,
                 state.data

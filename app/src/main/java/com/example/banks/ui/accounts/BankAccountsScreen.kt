@@ -22,6 +22,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +43,8 @@ import com.example.banks.ui.component.NavigationTopBar
 import com.example.banks.ui.model.AccountUI
 import com.example.banks.ui.model.BankUI
 import com.example.banks.ui.navigation.NavigationItem
-import com.example.banks.utils.DataState
+import com.example.banks.network.DataResult
+import com.example.banks.ui.component.CircularIndicator
 import com.example.banks.utils.ListDivider
 import com.example.banks.utils.ListDividerPadding
 import com.example.banks.utils.UiUtils
@@ -61,22 +64,23 @@ fun BankAccountsScreen(
         }
     ) { innerPadding ->
 
-        val dataState = viewModel.bankAccounts.observeAsState()
+        val dataState by viewModel.bankAccounts.collectAsState()
 
         LaunchedEffect(key1 = Unit) {
             viewModel.getBankAccounts()
         }
 
-        when (val state = dataState.value) {
-            is DataState.Failure -> {
+        when (val state = dataState) {
+            is DataResult.Error -> {
                 // Show Error
                 Log.e("BankAccountsScreen", state.errorMessage.toString())
             }
-            DataState.Loading -> {
+            DataResult.Loading -> {
                 // Show Loading
                 Log.v("BankAccountsScreen", "Loading")
+                CircularIndicator()
             }
-            is DataState.Success -> {
+            is DataResult.Success -> {
                 val mainBanks = state.data.filter { it.isMainBank }.sortedBy { it.name.lowercase() }
                 val otherBanks = state.data.filter { !it.isMainBank }.sortedBy { it.name.lowercase() }
                 val categories = mutableListOf<BankCategory>()
@@ -90,10 +94,6 @@ fun BankAccountsScreen(
                 }
 
                 BankMainView(innerPadding, navHostController, Modifier, categories)
-            }
-            null -> {
-                // Show Error with null
-                Log.v("BankAccountsScreen", "Null")
             }
         }
 

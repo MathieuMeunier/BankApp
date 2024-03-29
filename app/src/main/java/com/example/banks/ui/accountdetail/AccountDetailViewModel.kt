@@ -6,29 +6,30 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.banks.repository.BankRepository
 import com.example.banks.ui.model.AccountUI
-import com.example.banks.utils.DataState
-import com.example.banks.utils.convertToDataState
+import com.example.banks.network.DataResult
+import com.example.banks.network.convertToDataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface AccountDetailViewModel {
-    val account: LiveData<DataState<AccountUI>>
+    val account: LiveData<DataResult<AccountUI>>
     fun getAccount(accountIdentifier: String)
 }
 
 @HiltViewModel
 class AccountDetailViewModelImpl @Inject constructor(private val bankRepository: BankRepository) : AccountDetailViewModel, ViewModel() {
 
-    private val _account: MutableLiveData<DataState<AccountUI>> = MutableLiveData()
+    private val _account: MutableLiveData<DataResult<AccountUI>> = MutableLiveData()
 
-    override val account: LiveData<DataState<AccountUI>>
+    override val account: LiveData<DataResult<AccountUI>>
         get() = _account
 
     override fun getAccount(accountIdentifier: String) {
         viewModelScope.launch {
-            val result = bankRepository.getAccount(accountIdentifier).convertToDataState()
-            _account.postValue(result)
+            bankRepository.getAccount(accountIdentifier).collect {
+                _account.postValue(it)
+            }
         }
     }
 }
